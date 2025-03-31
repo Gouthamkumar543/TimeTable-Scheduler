@@ -54,7 +54,7 @@ const LogIn = () => {
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" name='password' onChange={Handle_Login_Users} required autoFocus />
                         </Form.Group>
-                        <Button variant="secondary"  style={{ margin: "0px 10px" }} onClick={LogIn_Modal_Close}>Close</Button>
+                        <Button variant="danger"  style={{ margin: "0px 10px" }} onClick={LogIn_Modal_Close}>Close</Button>
                         <Button variant="primary" type="submit">LogIn</Button>
                     </Form>
                 </Modal.Body>

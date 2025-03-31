@@ -68,7 +68,7 @@ const SignUp = () => {
                             <Form.Label>Confirm Password</Form.Label>
                             <Form.Control type="password" name='confirmpassword' onChange={Handle_Signup_users} required autoFocus />
                         </Form.Group>
-                        <Button variant="secondary" style={{ margin: "0px 10px" }} onClick={Signup_Modal_Close}>Close</Button>
+                        <Button variant="danger" style={{ margin: "0px 10px" }} onClick={Signup_Modal_Close}>Close</Button>
                         <Button variant="primary" type='submit'>SignUp</Button>
                     </Form>
                 </Modal.Body>
