@@ -18,6 +18,12 @@ const Dashboard = () => {
     const [showModal, setShowModal] = useState(false);
     const [showError, setShowError] = useState(false)
     const [editing, setEditing] = useState(false)
+    const [toolBar,setToolBar] = useState({
+        left: "prev,next today",
+        center: "title",
+        right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek"
+    })
+    const [calendarView, setCalendarView] = useState("dayGridMonth");
 
     const { title, start, end } = newEvent
 
@@ -42,6 +48,30 @@ const Dashboard = () => {
         };
 
         GetData();
+
+        const handleResize = () => {
+            if (window.innerWidth < 400) {
+                setCalendarView("listWeek"); // Use compact list view for extra small screens
+                setToolBar  ({
+                    left: "prev,next today",
+                    right: "dayGridMonth,timeGridWeek,listWeek",
+                });
+            } else if(Window.innerWidth >400) {
+                setCalendarView("dayGridMonth");
+                setToolBar({
+                    left: "prev,next today",
+                    center: "title",
+                    right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
+                });
+            }
+        };
+
+        handleResize();
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        }
     }, [loggedin]);
 
     const Handle_Form_Change = (e) => {
@@ -59,20 +89,14 @@ const Dashboard = () => {
             return;
         }
 
-        if (editing) {
-            setEvents(prevEvents => prevEvents.map(x => (x.id === newEvent.id ? { ...newEvent } : x)));
-        } else {
-            setEvents([...events, { ...newEvent, id: Date.now().toString() }])
-        }
+        const eventId = newEvent.id || Date.now().toString();
+        const updatedEvent = { ...newEvent, id: eventId };
 
         try {
-            await set(ref(DataBase, `Data/Users/${loggedin}/data/${title}`), {
-                title: title,
-                start: start,
-                end: end
-            })
+            await set(ref(DataBase, `Data/Users/${loggedin}/data/${eventId}`), updatedEvent);
+            setEvents(x => editing ? x.map(e => e.id === eventId ? updatedEvent : e) : [...x, updatedEvent]);
         } catch (err) {
-            console.log(err);
+            console.log("Error:", err);
         }
 
         setShowModal(false);
@@ -101,7 +125,7 @@ const Dashboard = () => {
 
     const Handle_Delete_Event = async () => {
         try {
-            await remove(ref(DataBase, `Data/Users/${loggedin}/data/${newEvent.title}`));
+            await remove(ref(DataBase, `Data/Users/${loggedin}/data/${newEvent.id}`));
             const allData = await get(ref(DataBase, `Data/Users/${loggedin}/data`));
             if (allData.exists()) {
                 setEvents(Object.values(allData.val()));
@@ -154,12 +178,8 @@ const Dashboard = () => {
 
             <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
-                initialView="dayGridMonth"
-                headerToolbar={{
-                    left: "prev,next today",
-                    center: "title",
-                    right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek"
-                }}
+                initialView={calendarView}
+                headerToolbar={toolBar}
                 events={events}
                 editable={true}
                 selectable={true}

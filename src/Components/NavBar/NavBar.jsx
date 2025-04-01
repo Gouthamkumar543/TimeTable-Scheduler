@@ -1,6 +1,7 @@
 import React from 'react'
 import { Navbar, Container, Nav, Button, Collapse } from "react-bootstrap"
 import { useNavigate } from 'react-router-dom'
+import { TbAlarmAverage } from "react-icons/tb";
 
 const NavBar_1 = () => {
 
@@ -10,7 +11,7 @@ const NavBar_1 = () => {
     <div>
       <Navbar bg="dark" data-bs-theme="dark" expand="sm">
         <Container>
-          <Navbar.Brand href="./NavBar.jsx">Navbar</Navbar.Brand>
+          <Navbar.Brand href="./NavBar.jsx"><TbAlarmAverage size={40}/>Time-Scheduler</Navbar.Brand>
           <Navbar.Toggle></Navbar.Toggle>
           <Navbar.Collapse>
             <Nav className="me-auto">
