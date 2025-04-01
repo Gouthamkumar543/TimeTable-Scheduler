@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
-import { Modal, Form, Button,Alert } from "react-bootstrap"
+import { Modal, Form, Button, Alert } from "react-bootstrap"
 import { useNavigate } from 'react-router-dom'
-import { createUserWithEmailAndPassword } from "firebase/auth"
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { Authentication } from '../FireBase/FireBase'
+import { set, ref, get } from "firebase/database"
+import { DataBase } from '../FireBase/FireBase'
 
 const SignUp = () => {
     const [signupShow, setSignupShow] = useState(true)
@@ -36,7 +38,16 @@ const SignUp = () => {
             return
         }
         try {
-            await createUserWithEmailAndPassword(Authentication, email, password)
+            const SignUpUser = await createUserWithEmailAndPassword(Authentication, email, password)
+            const User = SignUpUser.user
+
+            await updateProfile(User, { displayName: name })
+            await set(ref(DataBase, `Data/Users/${name}`), {
+                name: name,
+                email: email,
+                id: SignUpUser.user.uid
+            })
+
             Navigate("/login")
         } catch (err) {
             setError(err.message)

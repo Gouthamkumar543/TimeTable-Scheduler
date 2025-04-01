@@ -2,7 +2,9 @@ import React, { useState } from 'react'
 import { Modal, Form, Button, Alert } from "react-bootstrap"
 import { useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword } from "firebase/auth"
-import { Authentication } from '../FireBase/FireBase'
+import { Authentication,DataBase } from '../FireBase/FireBase'
+import { get, ref } from 'firebase/database'
+
 
 const LogIn = () => {
 
@@ -30,8 +32,17 @@ const LogIn = () => {
         event.preventDefault()
         setError('')
         try {
-            await signInWithEmailAndPassword(Authentication, email, password)
-            Navigate("/")
+            const UserCred = await signInWithEmailAndPassword(Authentication, email, password)
+            const LogInUser = UserCred.user.displayName
+            const User = ref(DataBase, `Data/Users/${LogInUser}`)
+
+            const UserData = await get(User)
+
+            if (UserData.exists()) {
+                Navigate("/dashboard", { state: { PersonData: UserData.val()} })
+            } else {
+                alert("No Data Found")
+            }
         } catch (err) {
             setError(err.message)
         }
@@ -54,7 +65,7 @@ const LogIn = () => {
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" name='password' onChange={Handle_Login_Users} required autoFocus />
                         </Form.Group>
-                        <Button variant="danger"  style={{ margin: "0px 10px" }} onClick={LogIn_Modal_Close}>Close</Button>
+                        <Button variant="danger" style={{ margin: "0px 10px" }} onClick={LogIn_Modal_Close}>Close</Button>
                         <Button variant="primary" type="submit">LogIn</Button>
                     </Form>
                 </Modal.Body>
