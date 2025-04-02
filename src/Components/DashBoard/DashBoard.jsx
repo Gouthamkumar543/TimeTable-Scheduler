@@ -5,42 +5,34 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import { Modal, Form, Button, Alert } from "react-bootstrap";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { DataBase } from "../FireBase/FireBase";
 import { set, get, ref, remove } from "firebase/database";
 import { useEffect } from "react";
+import "./DashBoard.css"
 
 const Dashboard = () => {
 
     const [events, setEvents] = useState([]);
-    const [newEvent, setNewEvent] = useState({ title: "", start: "", end: "" });
+    const [newEvent, setNewEvent] = useState({ important: "normal", title: "", start: "", end: "" });
     const [showModal, setShowModal] = useState(false);
     const [showError, setShowError] = useState(false)
     const [editing, setEditing] = useState(false)
-    const [toolBar,setToolBar] = useState({
+    const [toolBar, setToolBar] = useState({
         left: "prev,next today",
         center: "title",
         right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek"
     })
-    const [calendarView, setCalendarView] = useState("dayGridMonth");
-
-    const { title, start, end } = newEvent
+    const [calendarView, setCalendarView] = useState("dayGridMonth")
 
     const loc = useLocation()
     const loggedin = loc.state?.PersonData?.name || "defaultUser";
 
-    const Navigate = useNavigate()
-
     useEffect(() => {
         const GetData = async () => {
             try {
-                const allData = await get(ref(DataBase, `Data/Users/${loggedin}/data`));
-                if (allData.exists()) {
-                    setEvents(Object.values(allData.val()));
-                } else {
-                    console.log("No events found");
-                    setEvents([]);
-                }
+                const snapshot = await get(ref(DataBase, `Data/Users/${loggedin}/data`));
+                setEvents(snapshot.exists() ? Object.values(snapshot.val()) : []);
             } catch (err) {
                 console.log("Error fetching data:", err);
             }
@@ -51,11 +43,11 @@ const Dashboard = () => {
         const handleResize = () => {
             if (window.innerWidth < 400) {
                 setCalendarView("listWeek");
-                setToolBar  ({
+                setToolBar({
                     left: "prev,next today",
                     right: "dayGridMonth,timeGridWeek,listWeek",
                 });
-            }else{
+            } else {
                 setCalendarView("dayGridMonth")
                 setToolBar({
                     left: "prev,next today",
@@ -96,24 +88,27 @@ const Dashboard = () => {
         }
 
         setShowModal(false);
-        setNewEvent({ title: "", start: "", end: "" });
+        setNewEvent({ important: "normal", title: "", start: "", end: "" })
         setEditing(false)
         setShowError(false)
     };
 
     const Handle_Close_Modal = () => {
         setShowModal(false);
-        setNewEvent({ title: "", start: "", end: "" });
+        setNewEvent({ important: "normal", title: "", start: "", end: "" });
         setEditing(false)
         setShowError(false)
     };
 
     const Handle_Click_Event = (x) => {
+        // console.log("Event Clicked:", x.event);
+        // console.log("Extended Props:", x.event.extendedProps);
         setNewEvent({
             id: x.event.id,
             title: x.event.title,
-            start: x.event.start.toISOString().slice(0, 16),
-            end: x.event.end.toISOString().slice(0, 16),
+            start: x.event.start.toLocaleString('sv-SE').slice(0, 16),
+            end: x.event.end.toLocaleString('sv-SE').slice(0, 16),
+            important: x.event.extendedProps.important || "normal"
         });
         setEditing(true)
         setShowModal(true)
@@ -147,6 +142,13 @@ const Dashboard = () => {
                 <Modal.Body>
                     {showError && <Alert variant="danger">End date must be later than the start date!</Alert>}
                     <Form onSubmit={Handle_New_Event_Submit}>
+                        <Form.Group className="mb-3" controlId="exampleForm.ControlSelect1">
+                            <Form.Label>Select Importance</Form.Label>
+                            <Form.Select name="important" value={newEvent.important} onChange={Handle_Form_Change} required>
+                                <option value="normal">Normal</option>
+                                <option value="important">Important</option>
+                            </Form.Select>
+                        </Form.Group>
                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                             <Form.Control type="text" name='title' placeholder="Enter Title" value={newEvent.title} onChange={Handle_Form_Change} required autoFocus />
                         </Form.Group>
@@ -175,6 +177,7 @@ const Dashboard = () => {
                 selectable={true}
                 eventClick={Handle_Click_Event}
                 height="600px"
+                eventClassNames={(x) => (x.event.extendedProps.important === "important" ? "important-event" : "")}
             />
         </div>
     );

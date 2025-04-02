@@ -14,7 +14,7 @@ const App = () => {
       <NavBar_1 userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn}/>
       <Routes>
         <Route path='/signup' element={<SignUp />} />
-        <Route path='/login' element={<LogIn setUserLoggedIn={setUserLoggedIn}/>} />
+        <Route path='/login' element={<LogIn userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn}/>} />
         <Route path='/dashboard' element={<DashBoard/>}/>
       </Routes>
     </div>

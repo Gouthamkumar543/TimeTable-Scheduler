@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import { Navbar, Container, Nav, Button, Collapse } from "react-bootstrap"
 import { useNavigate } from 'react-router-dom'
 import { TbAlarmAverage } from "react-icons/tb";
@@ -10,11 +10,19 @@ const NavBar_1 = ({ userLoggedIn, setUserLoggedIn }) => {
 
   const Navigate = useNavigate()
 
+  useEffect(() => {
+    const loggedIn = localStorage.getItem("loggedIn") === "true"
+    setUserLoggedIn(loggedIn)
+  }, [])
+
   const SignOut = () => {
     signOut(Authentication)
+    localStorage.removeItem("loggedIn")
     setUserLoggedIn(false)
     Navigate("/")
   }
+
+
 
   return (
     <div>

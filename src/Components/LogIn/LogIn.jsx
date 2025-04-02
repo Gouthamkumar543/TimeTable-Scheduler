@@ -6,7 +6,7 @@ import { Authentication,DataBase } from '../FireBase/FireBase'
 import { get, ref } from 'firebase/database'
 
 
-const LogIn = ({setUserLoggedIn}) => {
+const LogIn = ({userLoggedIn, setUserLoggedIn}) => {
 
     const [loginShow, setLoginShow] = useState(true)
     const [loginUser, setLoginUser] = useState({
@@ -35,9 +35,9 @@ const LogIn = ({setUserLoggedIn}) => {
             const UserCred = await signInWithEmailAndPassword(Authentication, email, password)
             const LogInUser = UserCred.user.displayName
             const User = ref(DataBase, `Data/Users/${LogInUser}`)
-            setUserLoggedIn(true)
-
             const UserData = await get(User)
+            localStorage.setItem("loggedIn","true")
+            setUserLoggedIn(true)
 
             if (UserData.exists()) {
                 Navigate("/dashboard", { state: { PersonData: UserData.val()} })
