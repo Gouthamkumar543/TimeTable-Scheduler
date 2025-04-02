@@ -6,8 +6,7 @@ import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import { Modal, Form, Button, Alert } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
-import { signOut } from "firebase/auth"
-import { Authentication, DataBase } from "../FireBase/FireBase";
+import { DataBase } from "../FireBase/FireBase";
 import { set, get, ref, remove } from "firebase/database";
 import { useEffect } from "react";
 
@@ -51,27 +50,24 @@ const Dashboard = () => {
 
         const handleResize = () => {
             if (window.innerWidth < 400) {
-                setCalendarView("listWeek"); // Use compact list view for extra small screens
+                setCalendarView("listWeek");
                 setToolBar  ({
                     left: "prev,next today",
                     right: "dayGridMonth,timeGridWeek,listWeek",
                 });
-            } else if(Window.innerWidth >400) {
-                setCalendarView("dayGridMonth");
+            }else{
+                setCalendarView("dayGridMonth")
                 setToolBar({
                     left: "prev,next today",
                     center: "title",
-                    right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
-                });
+                    right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek"
+                })
             }
+
         };
 
         handleResize();
         window.addEventListener("resize", handleResize);
-
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        }
     }, [loggedin]);
 
     const Handle_Form_Change = (e) => {
@@ -141,15 +137,9 @@ const Dashboard = () => {
         setEditing(false)
     }
 
-    const SignOut = () => {
-        signOut(Authentication)
-        Navigate("/")
-    }
-
     return (
         <div style={{ padding: "20px" }}>
             <Button onClick={() => setShowModal(true)} style={{ marginBottom: "10px", padding: "10px", cursor: "pointer" }}>Add Event</Button>
-            <Button onClick={SignOut} style={{ marginBottom: "10px", padding: "10px", cursor: "pointer" }}>Sign Out</Button>
             {showModal && <Modal show={showModal} onHide={Handle_Close_Modal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Add New Schedule</Modal.Title>

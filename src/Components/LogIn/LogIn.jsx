@@ -6,7 +6,7 @@ import { Authentication,DataBase } from '../FireBase/FireBase'
 import { get, ref } from 'firebase/database'
 
 
-const LogIn = () => {
+const LogIn = ({setUserLoggedIn}) => {
 
     const [loginShow, setLoginShow] = useState(true)
     const [loginUser, setLoginUser] = useState({
@@ -35,6 +35,7 @@ const LogIn = () => {
             const UserCred = await signInWithEmailAndPassword(Authentication, email, password)
             const LogInUser = UserCred.user.displayName
             const User = ref(DataBase, `Data/Users/${LogInUser}`)
+            setUserLoggedIn(true)
 
             const UserData = await get(User)
 

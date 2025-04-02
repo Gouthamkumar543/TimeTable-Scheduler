@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import {getAuth} from "firebase/auth"
 import {getDatabase} from "firebase/database"
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyC5RZMu40kxnZRwUMoBnT8jZx01jcUeKsY",
   authDomain: "timetable-scheduler-85fc0.firebaseapp.com",
