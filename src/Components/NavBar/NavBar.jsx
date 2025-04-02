@@ -28,19 +28,23 @@ const NavBar_1 = ({ userLoggedIn, setUserLoggedIn }) => {
     <div>
       <Navbar bg="dark" data-bs-theme="dark" expand="sm">
         <Container>
-          <Navbar.Brand href="./NavBar.jsx"><TbAlarmAverage size={40} />Time-Scheduler</Navbar.Brand>
+          <Navbar.Brand href=""><TbAlarmAverage size={40} />Time-Scheduler</Navbar.Brand>
           <Navbar.Toggle></Navbar.Toggle>
           <Navbar.Collapse>
-            <Nav className="me-auto">
-              <Nav.Link href="/home">Home</Nav.Link>
-              <Nav.Link href="#about">About</Nav.Link>
+            {userLoggedIn ? <><Nav className="me-auto">
+              <Nav.Link href="#dashboard">DashBoard</Nav.Link>
               <Nav.Link href="#contact">Contact</Nav.Link>
             </Nav>
-            {userLoggedIn ? <Button onClick={SignOut}>Sign Out</Button>
-              : <div style={{ display: "flex", gap: "10px" }}>
+            <Button onClick={SignOut}>Sign Out</Button>
+            </>
+              : <><Nav className="me-auto">
+              <Nav.Link href="#home">Home</Nav.Link>
+              <Nav.Link href="#about">About</Nav.Link>
+              <Nav.Link href="#contact">Contact</Nav.Link>
+            </Nav><div style={{ display: "flex", gap: "10px" }}>
                 <Button className="mr-2" onClick={() => Navigate("/signup")}>SignUp</Button>
                 <Button className="mr-2" onClick={() => Navigate("/login")}>Login</Button>
-              </div>}
+              </div></>}
           </Navbar.Collapse>
         </Container>
       </Navbar>

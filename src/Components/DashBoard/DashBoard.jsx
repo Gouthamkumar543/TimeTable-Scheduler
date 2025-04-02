@@ -101,8 +101,6 @@ const Dashboard = () => {
     };
 
     const Handle_Click_Event = (x) => {
-        // console.log("Event Clicked:", x.event);
-        // console.log("Extended Props:", x.event.extendedProps);
         setNewEvent({
             id: x.event.id,
             title: x.event.title,
@@ -133,7 +131,7 @@ const Dashboard = () => {
     }
 
     return (
-        <div style={{ padding: "20px" }}>
+        <div style={{ padding: "20px",margin:"10px 0" }} id="dashboard">
             <Button onClick={() => setShowModal(true)} style={{ marginBottom: "10px", padding: "10px", cursor: "pointer" }}>Add Event</Button>
             {showModal && <Modal show={showModal} onHide={Handle_Close_Modal}>
                 <Modal.Header closeButton>
