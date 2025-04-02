@@ -17,7 +17,7 @@ const App = () => {
     <div>
       <NavBar_1 userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn}/>
       <Routes>
-        <Route path='/' element={<><Carousel_1 /> <Card_1 /> <Accondion_1/> s</>}/>
+        <Route path='/' element={<><Carousel_1 /> <Card_1 /> <Accondion_1/></>}/>
         <Route path='/signup' element={<SignUp />} />
         <Route path='/login' element={<LogIn userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn}/>} />
         <Route path='/dashboard' element={<DashBoard/>}/>
